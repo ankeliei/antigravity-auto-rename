@@ -1,0 +1,20 @@
+{
+  "name": "auto-rename",
+  "displayName": "Auto Rename Conversations",
+  "version": "1.0.0",
+  "description": "Hook and customize Antigravity conversation naming with custom prompts (initiation-language priority), periodic auto-rename every N user turns, and topbar/sidecar quick-rename buttons.",
+  "author": {
+    "name": "ankeliei",
+    "url": "https://github.com/ankeliei"
+  },
+  "homepage": "https://github.com/ankeliei/antigravity-auto-rename",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ankeliei/antigravity-auto-rename.git"
+  },
+  "license": "MIT",
+  "suggestedPrompts": [
+    "打开会话自动重命名设置",
+    "重新命名当前会话标题"
+  ]
+}

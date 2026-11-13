@@ -1,0 +1,18 @@
+{
+  "auto-rename-hook": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "node ./hooks/on-hook.mjs pre",
+        "timeout": 10
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "command": "node ./hooks/on-hook.mjs stop",
+        "timeout": 10
+      }
+    ]
+  }
+}

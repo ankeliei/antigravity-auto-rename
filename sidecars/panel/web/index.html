@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>会话自动重命名 (Auto Rename)</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/preload.js"></script>
+</head>
+<body>
+  <div id="app-root" class="ar-shell">
+    <div class="ar-header">
+      <div class="ar-title-wrap">
+        <h1 class="ar-title">会话自动重命名</h1>
+        <span id="conn-badge" class="ar-badge">连接中…</span>
+      </div>
+      <button id="refresh-btn" class="ar-btn ar-btn-sm" type="button">刷新</button>
+    </div>
+
+    <div id="status-banner" class="ar-status-banner"></div>
+
+    <section class="ar-card">
+      <h2 class="ar-section-title">当前会话与手动重命名</h2>
+      <div id="active-title" class="ar-active-title">读取中…</div>
+      <div id="active-meta" class="ar-meta-row"></div>
+      <div class="ar-btn-row">
+        <button id="rename-active-btn" class="ar-btn ar-btn-primary" type="button">
+          ✨ 立即 AI 重命名当前会话
+        </button>
+        <button id="undo-active-btn" class="ar-btn" type="button" hidden>
+          ↩ 恢复上一标题
+        </button>
+      </div>
+      <div class="ar-input-row">
+        <input id="manual-title-input" class="ar-input" type="text" placeholder="或直接输入自定义标题并保存…">
+        <button id="manual-title-save" class="ar-btn" type="button">保存标题</button>
+      </div>
+    </section>
+
+    <section class="ar-card">
+      <h2 class="ar-section-title">自定义命名提示词与自动触发规则</h2>
+
+      <div class="ar-check-list">
+        <label class="ar-check">
+          <input id="cfg-enabled" type="checkbox">
+          <span>启用会话命名 Hook 接管</span>
+        </label>
+        <label class="ar-check">
+          <input id="cfg-hook-first" type="checkbox">
+          <span>拦截首次命名（用户发出第 1 条消息时用自定义提示词抢占原生命名）</span>
+        </label>
+        <label class="ar-check">
+          <input id="cfg-prefer-lang" type="checkbox">
+          <span>会话命名优先采用用户发起会话所采用的语言（第 1 条用户消息语言）</span>
+        </label>
+        <label class="ar-check">
+          <input id="cfg-keep-tech" type="checkbox">
+          <span>保留核心技术名词与英文缩写（如 RPC、API、SQLite）</span>
+        </label>
+        <label class="ar-check">
+          <input id="cfg-ws-prefix" type="checkbox">
+          <span>在标题前添加工作区目录名 [workspace]</span>
+        </label>
+        <label class="ar-check">
+          <input id="cfg-emoji-prefix" type="checkbox">
+          <span>在标题前添加语义 Emoji</span>
+        </label>
+        <label class="ar-check">
+          <input id="cfg-window-overlay" type="checkbox">
+          <span>在主窗口顶栏显示「✨ 重命名」快捷按钮（需开启 CDP）</span>
+        </label>
+      </div>
+
+      <div class="ar-form-grid">
+        <div class="ar-field">
+          <label for="cfg-interval">自动重命名周期（每隔几次用户发言）</label>
+          <input id="cfg-interval" class="ar-input" type="number" min="0" max="100" step="1">
+          <span class="ar-hint">设为 0 表示仅在首次提问时命名；设为 5 则第 1 轮后每隔 5 次用户发言重命名一次。</span>
+        </div>
+        <div class="ar-field">
+          <label for="cfg-recent-turns">多轮重命名参考最近几条用户发言</label>
+          <input id="cfg-recent-turns" class="ar-input" type="number" min="1" max="20" step="1">
+          <span class="ar-hint">始终附带第 1 条消息（锁定语言）+ 最近 M 条用户发言。</span>
+        </div>
+        <div class="ar-field">
+          <label for="cfg-timing">自动重命名触发时机</label>
+          <select id="cfg-timing" class="ar-select">
+            <option value="pre">用户发出消息时立即重命名 (PreInvocation)</option>
+            <option value="stop">AI 回复本轮后结合上下文重命名 (Stop)</option>
+          </select>
+        </div>
+        <div class="ar-field">
+          <label for="cfg-max-zh">中文标题上限字数</label>
+          <input id="cfg-max-zh" class="ar-input" type="number" min="6" max="40" step="1">
+        </div>
+      </div>
+
+      <div class="ar-field">
+        <label for="cfg-custom-rules">自定义命名提示词（Custom Prompt Rules）</label>
+        <textarea id="cfg-custom-rules" class="ar-textarea" placeholder="输入自定义会话命名提示词…"></textarea>
+      </div>
+
+      <div class="ar-btn-row">
+        <button id="save-settings-btn" class="ar-btn ar-btn-primary" type="button">保存配置</button>
+        <button id="preview-prompt-btn" class="ar-btn" type="button">预览完整 Prompt</button>
+      </div>
+      <pre id="prompt-preview-box" class="ar-preview-box" hidden></pre>
+    </section>
+
+    <section class="ar-card">
+      <h2 class="ar-section-title">近期会话快速管理</h2>
+      <div id="conv-list" class="ar-conv-list"></div>
+    </section>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

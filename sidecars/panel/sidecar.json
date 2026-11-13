@@ -1,0 +1,18 @@
+{
+  "command": "node",
+  "args": ["main.mjs"],
+  "restart_policy": "always",
+  "display_name": "会话自动重命名",
+  "description": "Hook 并接管 Antigravity 会话命名过程：自定义命名提示词、每隔 N 次用户发言自动重命名、以及顶栏/侧边栏一键手动重命名按钮。",
+  "has_web_ui": true,
+  "ui_config": {
+    "display_name": "会话自动重命名",
+    "views": [
+      {
+        "path": "/",
+        "entrypoint": "SIDECAR_UI_ENTRYPOINT_AUX_PANE",
+        "title": "会话自动重命名"
+      }
+    ]
+  }
+}

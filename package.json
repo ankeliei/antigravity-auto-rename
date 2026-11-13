@@ -1,0 +1,31 @@
+{
+  "name": "antigravity-auto-rename",
+  "version": "1.0.0",
+  "private": false,
+  "type": "module",
+  "description": "Cross-platform Antigravity plugin that hooks conversation naming, applies custom prompts (prioritizing the user's opening language), auto-renames every N user turns, and provides topbar & sidecar manual rename buttons.",
+  "license": "MIT",
+  "author": {
+    "name": "ankeliei",
+    "url": "https://github.com/ankeliei"
+  },
+  "homepage": "https://github.com/ankeliei/antigravity-auto-rename",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ankeliei/antigravity-auto-rename.git"
+  },
+  "keywords": [
+    "antigravity",
+    "plugin",
+    "sidecar",
+    "hooks",
+    "auto-rename",
+    "conversation-title"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
