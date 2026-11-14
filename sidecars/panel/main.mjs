@@ -313,8 +313,12 @@ export async function runWatcherSweep() {
       if (turns <= 0) continue;
 
       const convState = getConversationState(conv.cascadeId, STATE_FILE);
+      // When triggerTiming is 'stop' and a multi-turn conversation is still actively running,
+      // wait for the Stop hook or idle state before generating the summary title.
+      const isRunning = /RUNNING/i.test(String(conv.status || ''));
+      const watcherPhase = turns > 1 && settings.triggerTiming === 'stop' && isRunning ? 'pre' : 'watcher';
       const decision = shouldTriggerAutoRename({
-        eventPhase: 'watcher',
+        eventPhase: watcherPhase,
         userTurnCount: turns,
         convState,
         settings,

@@ -8,6 +8,8 @@
   let currentStatus = null;
   let selectedConversationId = window.sidecar?.conversationId || '';
   let bannerTimer = null;
+  let hasLoadedSettings = false;
+  el('save-settings-btn').disabled = true;
 
   async function api(path, { method = 'GET', body } = {}) {
     const res = await fetchFn(path, {
@@ -42,6 +44,13 @@
   }
 
   function readDraftSettings() {
+    const prev = currentStatus?.settings || {};
+    const parseIntOrFallback = (inputId, fallback) => {
+      const raw = el(inputId).value.trim();
+      if (raw === '') return fallback;
+      const num = Number(raw);
+      return Number.isFinite(num) ? Math.floor(num) : fallback;
+    };
     return {
       enabled: el('cfg-enabled').checked,
       hookFirstTurn: el('cfg-hook-first').checked,
@@ -50,16 +59,18 @@
       addWorkspacePrefix: el('cfg-ws-prefix').checked,
       addEmojiPrefix: el('cfg-emoji-prefix').checked,
       enableWindowOverlay: el('cfg-window-overlay').checked,
-      autoRenameInterval: Number(el('cfg-interval').value || 0),
-      contextRecentTurns: Number(el('cfg-recent-turns').value || 5),
+      autoRenameInterval: parseIntOrFallback('cfg-interval', prev.autoRenameInterval ?? 5),
+      contextRecentTurns: parseIntOrFallback('cfg-recent-turns', prev.contextRecentTurns ?? 5),
       triggerTiming: el('cfg-timing').value === 'stop' ? 'stop' : 'pre',
-      maxTitleCharsZh: Number(el('cfg-max-zh').value || 14),
+      maxTitleCharsZh: parseIntOrFallback('cfg-max-zh', prev.maxTitleCharsZh ?? 14),
       customPromptRules: el('cfg-custom-rules').value,
     };
   }
 
   function populateSettingsForm(settings) {
     if (!settings) return;
+    hasLoadedSettings = true;
+    el('save-settings-btn').disabled = false;
     el('cfg-enabled').checked = settings.enabled !== false;
     el('cfg-hook-first').checked = settings.hookFirstTurn !== false;
     el('cfg-prefer-lang').checked = settings.preferInitiationLanguage !== false;
@@ -103,7 +114,9 @@
     const langLabel = active.initiationLanguage?.label || '未知';
     addPill(`发起语言: ${langLabel}`);
     addPill(`用户发言: ${active.userTurnCount || 0} 轮`);
-    if (active.turnsUntilAutoRename !== null && active.turnsUntilAutoRename !== undefined) {
+    if (Number(status?.settings?.autoRenameInterval || 0) <= 0) {
+      addPill('多轮自动重命名已关闭 (周期=0)', 'ar-badge warn');
+    } else if (active.turnsUntilAutoRename !== null && active.turnsUntilAutoRename !== undefined) {
       addPill(
         active.turnsUntilAutoRename === 0
           ? '本轮可触发自动重命名'
@@ -269,6 +282,7 @@
   });
 
   el('save-settings-btn').addEventListener('click', async () => {
+    if (!hasLoadedSettings) return;
     const btn = el('save-settings-btn');
     btn.disabled = true;
     try {

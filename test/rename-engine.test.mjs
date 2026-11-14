@@ -35,13 +35,19 @@ function makeTempSandbox() {
   };
 }
 
-test('cleanUserMessageText strips XML wrappers, metadata, and leading slash commands', () => {
+test('cleanUserMessageText strips XML wrappers, metadata, settings tags, and leading slash commands', () => {
   const raw = `<USER_REQUEST>
 /plan 我想开发一个 Antigravity 插件
 </USER_REQUEST>
 <ADDITIONAL_METADATA>
 The current local time is: 2026-11-14
-</ADDITIONAL_METADATA>`;
+</ADDITIONAL_METADATA>
+<USER_SETTINGS_CHANGE>
+The user changed setting Model Selection from None to Gemini 4.
+</USER_SETTINGS_CHANGE>
+<SYSTEM_MESSAGE>
+Internal notice
+</SYSTEM_MESSAGE>`;
   assert.equal(cleanUserMessageText(raw), '我想开发一个 Antigravity 插件');
 });
 

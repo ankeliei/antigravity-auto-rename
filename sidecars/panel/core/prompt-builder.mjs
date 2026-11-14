@@ -24,8 +24,17 @@ const LANG_META = {
  */
 export function cleanUserMessageText(rawText) {
   let text = String(rawText || '');
-  text = text.replace(/<ADDITIONAL_METADATA>[\s\S]*?<\/ADDITIONAL_METADATA>/gi, '');
-  text = text.replace(/<CONTEXT_SUMMARY>[\s\S]*?<\/CONTEXT_SUMMARY>/gi, '');
+  const tagNames = [
+    'ADDITIONAL_METADATA',
+    'CONTEXT_SUMMARY',
+    'USER_SETTINGS_CHANGE',
+    'SYSTEM_MESSAGE',
+    'IDE_CONTEXT',
+    'ENVIRONMENT_DETAILS',
+  ];
+  for (const tag of tagNames) {
+    text = text.replace(new RegExp(`<${tag}>[\\s\\S]*?<\\/${tag}>`, 'gi'), '');
+  }
   text = text.replace(/<\/?USER_REQUEST>/gi, '');
   text = text.trim();
   const slashMatch = text.match(/^\/[a-z0-9_-]+\s+([\s\S]+)$/i);

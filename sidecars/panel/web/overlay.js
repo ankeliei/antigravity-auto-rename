@@ -392,18 +392,24 @@
   };
 
   intervalSaveBtn.addEventListener('click', () => {
+    const raw = intervalInput.value.trim();
+    if (raw === '' || !Number.isFinite(Number(raw))) {
+      showToast('请输入有效的触发轮数（0 或正整数）', 3000);
+      return;
+    }
+    const nextVal = Math.max(0, Math.min(100, Math.floor(Number(raw))));
+    intervalInput.value = String(nextVal);
     void saveQuickSettings(
-      { autoRenameInterval: Number(intervalInput.value || 0) },
-      `已更新自动重命名周期：每 ${Number(intervalInput.value || 0)} 轮`
+      { autoRenameInterval: nextVal },
+      nextVal === 0
+        ? '已更新周期：仅首次提问时命名'
+        : `已更新自动重命名周期：每 ${nextVal} 轮`
     );
   });
 
   saveRuleBtn.addEventListener('click', () => {
     void saveQuickSettings(
-      {
-        autoRenameInterval: Number(intervalInput.value || 0),
-        customPromptRules: promptTextarea.value,
-      },
+      { customPromptRules: promptTextarea.value },
       '自定义命名提示词已保存'
     );
   });
